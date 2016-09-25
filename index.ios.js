@@ -12,6 +12,33 @@ import {
   View
 } from 'react-native';
 
+import RNFetchBlob from 'react-native-fetch-blob';
+
+const dataURL = "http://data.moi.gov.tw/MoiOD/System/DownloadFile.aspx?DATA=F0199ED0-184A-40D5-9506-95138F54159A";
+
+
+if (RNFetchBlob) {
+  let dirs = RNFetchBlob.fs.dirs;
+  console.log("got it");
+
+  RNFetchBlob
+  .config({
+    // add this option that makes response data to be stored as a file,
+    // this is much more performant.
+    fileCache : true,
+    appendExt : 'png',
+    path : dirs.DocumentDir + '/test.zip',
+  })
+  .fetch('GET', dataURL, {
+    // some headers ..
+  })
+  .then((res) => {
+    // the temp file path
+    console.log('The file saved to ', res.path())
+  })
+
+}
+
 class testReactNative extends Component {
   render() {
     return (
