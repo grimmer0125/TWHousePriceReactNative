@@ -31,10 +31,6 @@ if (RNFetchBlob) {
   console.log("got the dir path:", dirs.DocumentDir);
 }
 
-function testunzip(){
-  
-}
-
 function writeFile(){
   // write file
   // RNFetchBlob
@@ -52,6 +48,24 @@ function writeFile(){
   //   // the temp file path
   //   console.log('The file saved to ', res.path())
   // })
+}
+
+// test unzip, work
+function testUnzip(){
+  const readZipfilepath = dirs.DocumentDir+"/RNFetchBlob_tmp/test2.zip";
+  const ZipArchive = require('react-native-zip-archive');
+  // let sourcePath = 'path_to_your_zip_file';
+  // let targetPath = RNFS.DocumentDirectoryPath;
+  const unZipfilepath = dirs.DocumentDir+"/RNFetchBlob_tmp/test3";
+  ZipArchive.unzip(readZipfilepath, unZipfilepath)
+  .then(() => {
+    console.log('unzip completed!');
+  })
+  .catch((error) => {
+    console.log('unzip error:');
+
+    console.log(error);
+  })
 }
 
 // works
@@ -87,7 +101,7 @@ function readFile(){
 })
 }
 
-readFile();
+// readFile();
 
 class testReactNative extends Component {
   render() {
