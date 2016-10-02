@@ -7,6 +7,7 @@
     "ios": "react-native run-ios"
   },
   "dependencies": {
+    "comma-separated-values": "^3.6.4",
     "react": "15.3.2",
     "react-native": "0.34.0",
     "react-native-fetch-blob": "^0.9.5",
