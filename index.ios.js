@@ -5,232 +5,76 @@
  */
 
 import React, {Component} from 'react';
-import {AppRegistry, StyleSheet, Text, View} from 'react-native';
+import {AppRegistry, StyleSheet, Text, View, Image, ListView, TouchableHighlight, RecyclerViewBackedScrollView} from 'react-native';
 
-import RNFetchBlob from 'react-native-fetch-blob';
-const ZipArchive = require('react-native-zip-archive');
+import {loadORDownload} from './fetcher.js';
 
-let dirs = "";
-let zipFilePath = "";
-let unzipPath = "";
-if (RNFetchBlob) {
-    dirs = RNFetchBlob.fs.dirs;
-    zipFilePath = dirs.DocumentDir + '/house.zip';
-    unzipPath = dirs.DocumentDir+"/house";
-    console.log("got the file path:", zipFilePath);
-}
-
-import {parseHouseCSV} from './parser.js';
-import {storage} from './storageHelper.js';
-
-// 檢查有無key,
-//    如果有, 且沒過其, 則直接用資料
-//              過期,  從要
-//    沒有  從要
-
-storage.load()
-.then(res => {
-    // found data go to then()
-    // console.log("ret,userid:",ret.userid);
-    console.log("storage load res:", res);
-
-    // downloadAndParse();
-
-    // case1: use it
-
-}).catch(err => {
-    // any exception including data not found
-    // goes to catch()
-    console.warn(err.message);
-    switch (err.name) {
-        case 'NotFoundError':
-            console.log("not found");
-
-            // TODO;
-            break;
-        case 'ExpiredError':
-            console.log("'ExpiredError");
-
-            // TODO
-            break;
+// https://facebook.github.io/react-native/docs/listviewdatasource.html
+class testReactNative extends Component {
+    constructor() {
+        super();
+        this._data = [];//this._data.concat(newData);
+        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.state = {
+            dataSource: ds.cloneWithRows(['row 1', 'row 2']),
+        };
     }
 
-    downloadAndParse();
-})
+    onDataArrived(newData) {
+      console.log("onDataArrived");
 
-function downloadAndParse(){
-    // case2: get new data
-    console.log("start to download");
+      this._data = newData;//this._data.concat(newData);
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(this._data)
+      });
+    }
 
-    downloadFile()
-    .then((res) => {
-      // the temp file path
-      console.log('The file saved to ', res.path())
-
-      return unzip();
-    })
-    .then(() => {
-        console.log('unzip completed!');
-
-        parseHouseCSV(readEachCSVFile, houseData =>{
-            console.log("houseData:", houseData);
-            storage.save(houseData);
+    componentDidMount(){
+        console.log("try to get data");
+        loadORDownload(data=>{
+          this.onDataArrived(data);
         });
 
-    }).catch((error) => {
-        console.log('unzip error:');
-
-        console.log(error);
-    })
-}
-
-// parseTotalHouseCSV(readEachCSVFile);
-
-const dataURL = "http://data.moi.gov.tw/MoiOD/System/DownloadFile.aspx?DATA=F0199ED0-184A-40D5-9506-95138F54159A";
-
-// var unzip = require('unzip');
-// import {fs} from 'fs';
-
-
-
-// download and save
-function downloadFile() {
-    // write file
-    return RNFetchBlob
-    .config({
-      // add this option that makes response data to be stored as a file,
-      // this is much more performant.
-    //   fileCache : true,
-    //   appendExt : 'png',
-      path : zipFilePath, //dirs.DocumentDir + '/house.zip',
-    })
-    .fetch('GET', dataURL, {
-      // some headers ..
-    });
-}
-
-// test unzip, work
-function unzip() {
-    // const readZipfilepath = dirs.DocumentDir + "/RNFetchBlob_tmp/test2.zip";
-    // let sourcePath = 'path_to_your_zip_file';
-    // let targetPath = RNFS.DocumentDirectoryPath;
-    // const unZipfilepath = dirs.DocumentDir + "/RNFetchBlob_tmp/test3";
-    return ZipArchive.unzip(zipFilePath, unzipPath);
-}
-
-// 1. can not load iconv-lite
-// current: 2. another way is to modify ios code of react-native-fetch-blob to read big5 encoding
-function readEachCSVFile(code, houseType, finishReadFun) {
-    // let fileName =  "./opendata/"+code+ "_LVR_LAND_"+houseType+".CSV";
-
-    // console.log("b iconv");
-    // import iconv from 'iconv-lite';
-    // console.log("b iconv2 ");
-    // if (iconv){
-    //   console.log("b2 iconv2 ");
-    //
-    // }
-    // houseType = "B";
-
-    const readfilepath = unzipPath +"/"+ code + "_LVR_LAND_" + houseType + ".CSV";
-
-    // const readfilepath = dirs.DocumentDir+"/RNFetchBlob_tmp/test3/" +"20160916.TXT";
-
-    console.log('try to read:', readfilepath);
-
-    let data = ''
-    RNFetchBlob.fs.readStream(
-    // encoding, should be one of `base64`, `utf8`, `ascii`
-    readfilepath, `utf8`, 1095000
-    // file path
-    // 4K buffer size.
-    // (optional) buffer size, default to 4096 (4095 for BASE64 encoded data)
-    // when reading file in BASE64 encoding, buffer size must be multiples of 3.
-    ).then((ifstream) => {
-        ifstream.open()
-        ifstream.onData((chunk) => {
-            // when encoding is `ascii`, chunk will be an array contains numbers
-            // otherwise it will be a string
-            data += chunk
-
-            // [asciiArray addObject:[NSNumber numberWithChar:bytePtr[i]]];
-            // when encoding is `ascii`, chunk will be an array contains numbers
-
-            console.log("chunk size:%s", chunk.length);
-
-            // str = iconv.decode(new Buffer(chunk), 'Big5');
-            // console.log("final:", str);
-        })
-        ifstream.onError((err) => {
-            console.log('oops-err', err); // not exist case and other cases
-        })
-        ifstream.onEnd(() => {
-
-            //handle data
-            console.log("total data:", data.length);
-            finishReadFun(data);
-            console.log("total data2:", data.length);
-
-            // we need
-            // str = iconv.decode(new Buffer([0x68, 0x65, 0x6c, 0x6c, 0x6f]), 'win1251');
-
-            // <Image source={{ uri : 'data:image/png,base64' + data }}
-        })
-    })
-}
-
-// readEachCSVFile();
-
-// works, just for test
-function readTestFile() {
-    const readfilepath = dirs.DocumentDir + "/RNFetchBlob_tmp/2.txt";
-    console.log('try to read:', readfilepath);
-
-    let data = ''
-    RNFetchBlob.fs.readStream(
-    // encoding, should be one of `base64`, `utf8`, `ascii`
-    readfilepath, `utf8`
-    // file path
-
-    // (optional) buffer size, default to 4096 (4095 for BASE64 encoded data)
-    // when reading file in BASE64 encoding, buffer size must be multiples of 3.
-    ).then((ifstream) => {
-        ifstream.open()
-        ifstream.onData((chunk) => {
-            // when encoding is `ascii`, chunk will be an array contains numbers
-            // otherwise it will be a string
-            data += chunk
-        })
-        ifstream.onError((err) => {
-            console.log('oops-err', err); // not exist case and other cases
-        })
-        ifstream.onEnd(() => {
-
-            console.log("read data:", data);
-            // <Image source={{ uri : 'data:image/png,base64' + data }}
-        })
-    })
-}
-
-// readFile();
-
-class testReactNative extends Component {
-    render() {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.welcome}>
-                    Welcome to React Native!
-                </Text>
-                <Text style={styles.instructions}>
-                    To get started, edit index.ios.js
-                </Text>
-                <Text style={styles.instructions}>
-                    Press Cmd+R to reload,{'\n'}
-                    Cmd+D or shake for dev menu
-                </Text>
-            </View>
-        );
+  //       $.ajax({
+  //   url: this.props.url,
+  //   dataType: 'json',
+  //   cache: false,
+  //   success: function(data) {
+  //     this.setState({data: data});
+  //   }.bind(this),
+  //   error: function(xhr, status, err) {
+  //     console.error(this.props.url, status, err.toString());
+  //   }.bind(this)
+  // });
     }
+
+    render() {
+      return (
+        <View style={{paddingTop: 22}}>
+          <ListView
+            dataSource={this.state.dataSource}
+            renderRow={(rowData) => <Text>{rowData}</Text>}
+          />
+        </View>
+      );
+    }
+
+    // render() {
+    //     return (
+    //         <View style={styles.container}>
+    //             <Text style={styles.welcome}>
+    //                 Welcome to React Native!
+    //             </Text>
+    //             <Text style={styles.instructions}>
+    //                 To get started, edit index.ios.js
+    //             </Text>
+    //             <Text style={styles.instructions}>
+    //                 Press Cmd+R to reload,{'\n'}
+    //                 Cmd+D or shake for dev menu
+    //             </Text>
+    //         </View>
+    //     );
+    // }
 }
 
 const styles = StyleSheet.create({

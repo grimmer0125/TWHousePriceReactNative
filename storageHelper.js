@@ -43,7 +43,7 @@ export var storage = (function () {
                 // if not specified, the defaultExpires will be applied instead.
                 // if set to null, then it will never expire.
                 // expires: 1000 * 60 * 1
-                expires: 1000 * 60 * 1
+                expires: 1000
             });
         },
         load: function(){

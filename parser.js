@@ -1,5 +1,7 @@
 let CSV = require('comma-separated-values');
 
+// var iconv = require('iconv-lite');
+
 let cityList = [
 
 {code:"C", name:"基隆市"},
@@ -17,7 +19,7 @@ let cityList = [
 {code:"Q", name:"嘉義縣"},
 {code:"D", name:"臺南市"},
 {code:"E", name:"高雄市"},//,//,
-{code:"T", name:"屏東縣"},//,它的A, ios讀不到!!
+// {code:"T", name:"屏東縣"},//,它的A, ios讀不到!!
 {code:"G", name:"宜蘭縣"},
 {code:"U", name:"花蓮縣"},
 {code:"V", name:"臺東縣"},
@@ -103,7 +105,7 @@ function checkAverage(code, average){
       findOut = true;
     }
     console.log("city:",city);
-    if(city.price === null){
+    if(city.price == null){
       console.log("this city.price is null");
       console.log("city2:",city);
 
