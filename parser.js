@@ -16,8 +16,8 @@ let cityList = [
 {code:"I", name:"嘉義市"},
 {code:"Q", name:"嘉義縣"},
 {code:"D", name:"臺南市"},
-{code:"E", name:"高雄市"},
-{code:"T", name:"屏東縣"},
+{code:"E", name:"高雄市"},//,//,
+{code:"T", name:"屏東縣"},//,它的A, ios讀不到!!
 {code:"G", name:"宜蘭縣"},
 {code:"U", name:"花蓮縣"},
 {code:"V", name:"臺東縣"},
@@ -65,43 +65,83 @@ let cityList = [
 //   return {total:total, number:num}
 // }
 
-export function useGetTotal(readFileFun){
-  console.log("use get total");
-  let newCityList = cityList.slice(0);
+var readCallback = null;
+export function parseHouseCSV(readFileFun, readAllCallback){
+  readCallback = readAllCallback;
+  console.log("start parseHouseCSV");
+
+  // let newCityList = cityList.slice(0);
 
   let NumOfCity = cityList.length;
-  // for (let i=0; i< NumOfCity; i++){
-  for (let i=0; i< 1; i++){
-    console.log("use get total 2");
 
-    let reader = new fileReader(cityList[i].code);
-    reader.startReadAsync(readFileFun);
+  // n x 2 個非同步
+  for (let i=0; i< NumOfCity; i++){
+  // for (let i=0; i< 1; i++){
+    // console.log("use get total 2");
+
+    let parser = new priceFileParser(cityList[i].code);
+    parser.startReadAsync(readFileFun);
     // let result1 = getTotal(cityList[i].code,"A");
     // let result2 = getTotal(cityList[i].code,"B"); //預售屋
 
 
     // newCityList[i].price = average;
   }
+  console.log("loop all");
 }
 
-export function fileReader(code){
+function checkAverage(code, average){
+
+  let NumOfCity = cityList.length;
+  let allGetAverage = true;
+  let findOut = false;
+  for (let i=0; i< NumOfCity; i++){
+    const city = cityList[i];
+    if(city.code === code){
+      console.log("find out");
+      city.price = average;
+      findOut = true;
+    }
+    console.log("city:",city);
+    if(city.price === null){
+      console.log("this city.price is null");
+      console.log("city2:",city);
+
+      allGetAverage = false;
+    }
+
+    if(allGetAverage==false && findOut){
+      console.log("find out and sure not get all");
+      break;
+    }
+  }
+
+  if(allGetAverage){
+    console.log("get all average!!!");
+    readCallback(cityList);
+  }
+}
+
+function priceFileParser(code){
 
   this.resultA = null;
   this.resultB = null;
   // this.fileA = null;
   // this.fileB = null;
-  this.average = null;
+  this.average = 0;
+  this.code = code;
 
   this.calculateAverage = function(){
     let totalNumber = this.resultA.number+ this.resultB.number;
     console.log('number:',this.resultA.number,this.resultB.number );
     console.log('total:', this.resultA.total, this.resultB.total);
 
-    let average = 0;
+    // let average = 0;
     if(totalNumber>0){
       this.average = (this.resultA.total+this.resultB.total)/totalNumber;
-      console.log('average:', this.average );
     }
+    console.log('code:%s,average:%s', this.code, this.average);
+    checkAverage(this.code, this.average);
   }
 
   this.startReadAsync = function(readAyncFun){
@@ -109,24 +149,34 @@ export function fileReader(code){
     console.log("startReadAsync1");
 
     readAyncFun(code,"A", (result)=>{
+      console.log("A:");
       console.log("read file A ok, str.len:", result.length);
-      this.resultA =  this.getTotal(result);
+      if(result.length>0){
+        this.resultA =  this.getTotal(result);
 
-      if(this.resultB){
-        console.log("calc");
-        this.calculateAverage();
+        if(this.resultB){
+          console.log("calc A-B");
+          this.calculateAverage();
+        }
+      } else {
+        console.log("read file content len = 0, for code:", this.code);
       }
     });
 
     console.log("startReadAsync2");
 
     readAyncFun(code, "B", (result)=>{
+      console.log("B:", result);
       console.log("read file B ok, str.len:", result.length);
-      this.resultB =  this.getTotal(result);
+      if(result.length>0){
+        this.resultB =  this.getTotal(result);
 
-      if(this.resultA){
-        console.log("calc");
-        this.calculateAverage();
+        if(this.resultA){
+          console.log("calc B-A");
+          this.calculateAverage();
+        }
+      } else {
+        console.log("read file content len = 0, for code:", this.code);
       }
     });
   }
