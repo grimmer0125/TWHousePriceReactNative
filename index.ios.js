@@ -5,7 +5,16 @@
  */
 
 import React, {Component} from 'react';
-import {AppRegistry, StyleSheet, Text, View, Image, ListView, TouchableHighlight, RecyclerViewBackedScrollView} from 'react-native';
+import {
+    AppRegistry,
+    StyleSheet,
+    Text,
+    View,
+    Image,
+    ListView,
+    TouchableHighlight,
+    RecyclerViewBackedScrollView
+} from 'react-native';
 
 import {loadORDownload} from './fetcher.js';
 
@@ -13,53 +22,91 @@ import {loadORDownload} from './fetcher.js';
 class testReactNative extends Component {
     constructor() {
         super();
-        this._data = [];//this._data.concat(newData);
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this._data = []; //this._data.concat(newData);
+        const ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 !== r2
+        });
         this.state = {
-            dataSource: ds.cloneWithRows(['row 1', 'row 2']),
+            dataSource: ds.cloneWithRows(['row 1', 'row 2'])
         };
     }
 
     onDataArrived(newData) {
-      console.log("onDataArrived");
+        console.log("onDataArrived");
 
-      this._data = newData;//this._data.concat(newData);
-      this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(this._data)
-      });
+        this._data = newData; //this._data.concat(newData);
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(this._data)
+        });
     }
 
-    componentDidMount(){
+    componentDidMount() {
         console.log("try to get data");
-        loadORDownload(data=>{
-          this.onDataArrived(data);
+        loadORDownload(data => {
+            this.onDataArrived(data);
         });
 
-  //       $.ajax({
-  //   url: this.props.url,
-  //   dataType: 'json',
-  //   cache: false,
-  //   success: function(data) {
-  //     this.setState({data: data});
-  //   }.bind(this),
-  //   error: function(xhr, status, err) {
-  //     console.error(this.props.url, status, err.toString());
-  //   }.bind(this)
-  // });
+        //       $.ajax({
+        //   url: this.props.url,
+        //   dataType: 'json',
+        //   cache: false,
+        //   success: function(data) {
+        //     this.setState({data: data});
+        //   }.bind(this),
+        //   error: function(xhr, status, err) {
+        //     console.error(this.props.url, status, err.toString());
+        //   }.bind(this)
+        // });
     }
 
-    render() {
-      return (
-        <View style={{paddingTop: 22}}>
-          <ListView
-            dataSource={this.state.dataSource}
-            renderRow={(rowData) => <Text>{rowData}</Text>}
-          />
-        </View>
+    _renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
+        //sectionID:s1, rowID:0-xx
+        // console.log("sectionID:%s;rowID",sectionID,rowID)
+        return (
+          <View key={`${sectionID}-${rowID}`} style={{
+            height: adjacentRowHighlighted
+                ? 4
+                : 1,
+            backgroundColor: adjacentRowHighlighted
+                ? '#3B5998'
+                : '#CCCCCC'
+        }}/>
       );
     }
 
+    render() {
+        return (
+            <View style={{
+                paddingTop: 22
+            }}>
+                <ListView
+                dataSource={this.state.dataSource}
+                renderRow={(rowData) => <Text>{rowData}</Text>}
+                renderSeparator={this._renderSeparator}
+                />
+            </View>
+        );
+    }
+
     // render() {
+    // const styles = StyleSheet.create({
+    //     container: {
+    //         flex: 1,
+    //         justifyContent: 'center',
+    //         alignItems: 'center',
+    //         backgroundColor: '#F5FCFF'
+    //     },
+    //     welcome: {
+    //         fontSize: 20,
+    //         textAlign: 'center',
+    //         margin: 10
+    //     },
+    //     instructions: {
+    //         textAlign: 'center',
+    //         color: '#333333',
+    //         marginBottom: 5
+    //     }
+    // });
     //     return (
     //         <View style={styles.container}>
     //             <Text style={styles.welcome}>
@@ -77,23 +124,6 @@ class testReactNative extends Component {
     // }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF'
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10
-    },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5
-    }
-});
+
 
 AppRegistry.registerComponent('testReactNative', () => testReactNative);

@@ -72,9 +72,10 @@ function downloadAndParse(dataCallback) {
                           ",");
                 }
 
-                return city.name+"平均房價(不動產+預售屋):$"+finalNum;
+                return city.name+":$"+finalNum;
             });
             console.log("new:", newData);
+            newData.splice(0, 0, "各縣市平均房價(不動產+預售屋)");
             storage.save(newData);
 
             dataCallback(newData);
