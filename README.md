@@ -5,7 +5,7 @@ It is the brother project of https://github.com/grimmer0125/3DTWHousePriceMap.
 ### Features
 1. Show the house price per country in Taiwan. 
 2. Use React Native.
-3. Automaticlly update the data every 0.5 month. Data source: http://data.gov.tw/node/6213. 
+3. Automaticlly update the data every 0.5 month. Data source: http://data.gov.tw/node/6213. Alternative: http://plvr.land.moi.gov.tw/Index 
 
 ### How to run on iOS 
 1. Follow the instrument to setup the enviornment, https://facebook.github.io/react-native/docs/getting-started.html
