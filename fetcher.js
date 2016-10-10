@@ -100,42 +100,31 @@ function downloadFile() {
         path: zipFilePath, //dirs.DocumentDir + '/house.zip',
     }).fetch('GET', dataURL, {
         // some headers ..
+
+        // Beware that when using a file path as Image source on Android,
+        // you must prepend "file://"" before the file path
+        // imageView = <Image source={{ uri : Platform.OS === 'android' ? 'file://' + res.path()  : '' + res.path() }}/>
     });
 }
 
 // unzip, work
 function unzip() {
 
-    // https://github.com/johanneslumpe/react-native-fs
-    // let targetPath = RNFS.DocumentDirectoryPath;
-
     return ZipArchive.unzip(zipFilePath, unzipPath);
 }
 
-// 1. can not load iconv-lite
-// current: 2. another way is to modify ios code of react-native-fetch-blob to read big5 encoding
+// method 1. use load iconv-lite, but it does not work on react-native
+// current: 2. another way is to modify ios/android code of react-native-fetch-blob to read big5 encoding
 function readEachCSVFile(code, houseType, finishReadFun) {
-    // let fileName =  "./opendata/"+code+ "_LVR_LAND_"+houseType+".CSV";
-
-    // console.log("b iconv");
-    // import iconv from 'iconv-lite';
-    // console.log("b iconv2 ");
-    // if (iconv){
-    //   console.log("b2 iconv2 ");
-    //
-    // }
-    // houseType = "B";
 
     const readfilepath = unzipPath + "/" + code + "_LVR_LAND_" + houseType + ".CSV";
-
-    // const readfilepath = dirs.DocumentDir+"/RNFetchBlob_tmp/test3/" +"20160916.TXT";
 
     console.log('try to read:', readfilepath);
 
     let data = ''
     RNFetchBlob.fs.readStream(
     // encoding, should be one of `base64`, `utf8`, `ascii`
-    readfilepath, `big5`, 1095000
+    readfilepath, `big5`, 1095000 //should set large enough
     // file path
     // 4K buffer size.
     // (optional) buffer size, default to 4096 (4095 for BASE64 encoded data)
@@ -150,7 +139,7 @@ function readEachCSVFile(code, houseType, finishReadFun) {
             // [asciiArray addObject:[NSNumber numberWithChar:bytePtr[i]]];
             // when encoding is `ascii`, chunk will be an array contains numbers
 
-            console.log("chunk size:%s", chunk.length);
+            // console.log("chunk size:%s", chunk.length);
 
             // str = iconv.decode(new Buffer(chunk), 'Big5');
             // console.log("final:", str);
@@ -161,46 +150,8 @@ function readEachCSVFile(code, houseType, finishReadFun) {
         ifstream.onEnd(() => {
 
             //handle data
-            console.log("total data:", data.length);
+            console.log("total data length:", data.length);
             finishReadFun(data);
-            console.log("total data2:", data.length);
-
-            // we need
-            // str = iconv.decode(new Buffer([0x68, 0x65, 0x6c, 0x6c, 0x6f]), 'win1251');
-
-            // <Image source={{ uri : 'data:image/png,base64' + data }}
         })
     })
 }
-
-// works, just for test
-// function readTestFile() {
-//     const readfilepath = dirs.DocumentDir + "/RNFetchBlob_tmp/2.txt";
-//     console.log('try to read:', readfilepath);
-//
-//     let data = ''
-//     RNFetchBlob.fs.readStream(
-//     // encoding, should be one of `base64`, `utf8`, `ascii`
-//     readfilepath, `utf8`
-//     // file path
-//
-//     // (optional) buffer size, default to 4096 (4095 for BASE64 encoded data)
-//     // when reading file in BASE64 encoding, buffer size must be multiples of 3.
-//     ).then((ifstream) => {
-//         ifstream.open()
-//         ifstream.onData((chunk) => {
-//             // when encoding is `ascii`, chunk will be an array contains numbers
-//             // otherwise it will be a string
-//             data += chunk
-//         })
-//         ifstream.onError((err) => {
-//             console.log('oops-err', err); // not exist case and other cases
-//         })
-//         ifstream.onEnd(() => {
-//
-//             console.log("read data:", data);
-//             // <Image source={{ uri : 'data:image/png,base64' + data }}
-//         })
-//     })
-// }
-// readFile();

@@ -1,7 +1,6 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
+ * Taiwan Average House Price React Native App
+ * @Grimmer
  */
 
  import React, {Component} from 'react';
@@ -21,7 +20,7 @@ import {loadORDownload} from './fetcher.js';
 class testReactNative extends Component {
     constructor() {
         super();
-        this._data = []; //this._data.concat(newData);
+        this._data = [];
         const ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
         });
@@ -33,7 +32,7 @@ class testReactNative extends Component {
     onDataArrived(newData) {
         console.log("onDataArrived");
 
-        this._data = newData; //this._data.concat(newData);
+        this._data = newData;
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(this._data)
         });
@@ -47,7 +46,7 @@ class testReactNative extends Component {
     }
 
     _renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
-        //sectionID:s1, rowID:0-xx
+        // sectionID:s1, rowID:0-xx
         // console.log("sectionID:%s;rowID",sectionID,rowID)
         return (
           <View key={`${sectionID}-${rowID}`} style={{

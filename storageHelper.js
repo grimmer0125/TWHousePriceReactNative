@@ -1,7 +1,7 @@
 import Storage from 'react-native-storage';
 import { AsyncStorage } from 'react-native';
 
-console.log("in storage helper");
+console.log("load storage helper");
 
 export var storage = (function () {
 
@@ -43,7 +43,7 @@ export var storage = (function () {
                 // if not specified, the defaultExpires will be applied instead.
                 // if set to null, then it will never expire.
                 // expires: 1000 * 60 * 1
-                expires: 1000
+                expires: 1000 * 3600 * 24 * 15
             });
         },
         load: function(){
@@ -66,4 +66,4 @@ export var storage = (function () {
     }
 })();
 
-console.log("in storage helper 222");
+console.log("end loading storage helper");
