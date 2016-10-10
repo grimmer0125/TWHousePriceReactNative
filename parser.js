@@ -19,7 +19,7 @@ let cityList = [
 {code:"Q", name:"嘉義縣"},
 {code:"D", name:"臺南市"},
 {code:"E", name:"高雄市"},//,//,
-// {code:"T", name:"屏東縣"},//,它的A, ios讀不到!!
+{code:"T", name:"屏東縣"},//,它的A, ios讀不到!!
 {code:"G", name:"宜蘭縣"},
 {code:"U", name:"花蓮縣"},
 {code:"V", name:"臺東縣"},
@@ -134,6 +134,12 @@ function priceFileParser(code){
   this.code = code;
 
   this.calculateAverage = function(){
+
+    if(this.resultA.total<0 || this.resultB.total<0){
+      console.log("read some file error:%s", this.code);
+      checkAverage(this.code, -1);
+    }
+
     let totalNumber = this.resultA.number+ this.resultB.number;
     console.log('number:',this.resultA.number,this.resultB.number );
     console.log('total:', this.resultA.total, this.resultB.total);
@@ -154,14 +160,16 @@ function priceFileParser(code){
       console.log("A:");
       console.log("read file A ok, str.len:", result.length);
       if(result.length>0){
-        this.resultA =  this.getTotal(result);
+        this.resultA =  this.getTotal(result); //maybe {total:0, number:0};
 
-        if(this.resultB){
-          console.log("calc A-B");
-          this.calculateAverage();
-        }
       } else {
         console.log("read file content len = 0, for code:", this.code);
+        this.resultA = {total:-1, number:1};
+      }
+
+      if(this.resultB){
+        console.log("calc A-B");
+        this.calculateAverage();
       }
     });
 
@@ -172,13 +180,14 @@ function priceFileParser(code){
       console.log("read file B ok, str.len:", result.length);
       if(result.length>0){
         this.resultB =  this.getTotal(result);
-
-        if(this.resultA){
-          console.log("calc B-A");
-          this.calculateAverage();
-        }
       } else {
         console.log("read file content len = 0, for code:", this.code);
+        this.resultA = {total:-1, number:1};
+      }
+
+      if(this.resultA){
+        console.log("calc B-A");
+        this.calculateAverage();
       }
     });
   }

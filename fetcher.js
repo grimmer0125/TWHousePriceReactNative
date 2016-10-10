@@ -61,7 +61,19 @@ function downloadAndParse(dataCallback) {
 
         parseHouseCSV(readEachCSVFile, cityData => {
             console.log("houseData:", cityData);
-            const newData = cityData.map(city=>{return city.name+city.price});
+            const newData = cityData.map(city=>{
+                let finalNum = 0;
+                if(city.price<0){
+                    finalNum ="error";
+                } else if (city.price ==0) {
+                    finalNum = "沒有交易";
+                } else {
+                    finalNum = (Math.round(city.price)).toString().replace(/\B(?=(\d{3})+(?!\d))/g,
+                          ",");
+                }
+
+                return city.name+"平均房價(不動產+預售屋):$"+finalNum;
+            });
             console.log("new:", newData);
             storage.save(newData);
 
