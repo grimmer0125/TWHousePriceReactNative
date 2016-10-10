@@ -1,4 +1,4 @@
-rootProject.name = 'testReactNative'
+rootProject.name = 'TWHousePriceReactNative'
 
 include ':app'
 include ':react-native-fetch-blob'

@@ -17,7 +17,7 @@
 
 import {loadORDownload} from './fetcher.js';
 
-class testReactNative extends Component {
+class TWHousePriceReactNative extends Component {
     constructor() {
         super();
         this._data = [];
@@ -75,4 +75,4 @@ class testReactNative extends Component {
     }
 }
 
-AppRegistry.registerComponent('testReactNative', () => testReactNative);
+AppRegistry.registerComponent('TWHousePriceReactNative', () => TWHousePriceReactNative);

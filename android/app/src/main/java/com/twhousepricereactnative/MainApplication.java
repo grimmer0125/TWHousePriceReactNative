@@ -1,4 +1,4 @@
-package com.testreactnative;
+package com.twhousepricereactnative;
 
 import android.app.Application;
 import android.util.Log;
