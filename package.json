@@ -6,8 +6,8 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "ios": "react-native run-ios",
     "android2": "concurrently 'emulator @Nexus_5X_API_23' 'sleep 13 && react-native run-android'",
-    "qemu_emulator": "emulator @Nexus_5X_API_23",
-    "android": "react-native run-android'"
+    "qemu": "emulator @Nexus_5X_API_23 &",
+    "android": "react-native run-android"
   },
   "dependencies": {
     "comma-separated-values": "^3.6.4",
