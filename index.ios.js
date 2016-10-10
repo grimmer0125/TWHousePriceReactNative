@@ -30,7 +30,7 @@ class TWHousePriceReactNative extends Component {
             dataSource: ds.cloneWithRows([]),loading:false
         };
 
-        this.onData  = this.onDataArrived.bind(this);
+        // this.onData  = this.onDataArrived.bind(this);
         this.clickReload = this._onPressButton.bind(this);
     }
 
@@ -38,7 +38,7 @@ class TWHousePriceReactNative extends Component {
 
       console.log("You tapped the button!");
       this.setState({loading: true});
-      downloadAndParse(this.onData);
+      downloadAndParse((data)=>this.onDataArrived(data));
     }
 
     onDataArrived(newData) {
@@ -55,12 +55,12 @@ class TWHousePriceReactNative extends Component {
 
         console.log("try to get data");
         this.setState({loading: true});
-        loadORDownload(this.onData);
+        loadORDownload((data)=>this.onDataArrived(data));
 
         setInterval(() => {
             console.log("check if price data expires");
             this.setState({loading: true});
-            loadORDownload(this.onData);
+            loadORDownload((data)=>this.onDataArrived(data));
         }, 1000*3600*24);
 
         // setInterval(function(){
