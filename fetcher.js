@@ -15,6 +15,8 @@ if (RNFetchBlob) {
 import {parseHouseCSV} from './parser.js';
 import {storage} from './storageHelper.js';
 
+export const title =  "兩月前的半月平均成交價(不動產+預售屋):";
+
 export function loadORDownload(dataCallback) {
 
     storage.load().then(res => {
@@ -22,6 +24,7 @@ export function loadORDownload(dataCallback) {
         console.log("storage load res:", res);
 
         dataCallback(res);
+        // downloadAndParse(dataCallback);
 
     }).catch(err => {
         // any exception including data not found
@@ -44,7 +47,7 @@ export function loadORDownload(dataCallback) {
     })
 }
 
-function downloadAndParse(dataCallback) {
+export function downloadAndParse(dataCallback) {
     // case2: get new data
     console.log("start to download");
 
@@ -73,7 +76,7 @@ function downloadAndParse(dataCallback) {
                 return city.name+":$"+finalNum;
             });
             console.log("new:", newData);
-            newData.splice(0, 0, "各縣市平均房價(不動產+預售屋)");
+            // newData.splice(0, 0, title);
             storage.save(newData);
 
             dataCallback(newData);

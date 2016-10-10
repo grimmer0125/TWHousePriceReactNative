@@ -86,6 +86,8 @@ function priceFileParser(code){
     if(this.resultA.total<0 || this.resultB.total<0){
       console.log("read some file error:%s", this.code);
       checkAverage(this.code, -1);
+
+      return;
     }
 
     let totalNumber = this.resultA.number+ this.resultB.number;
