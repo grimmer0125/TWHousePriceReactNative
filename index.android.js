@@ -39,10 +39,16 @@ class TWHousePriceReactNative extends Component {
     }
 
     componentDidMount() {
+
+        var onData  = this.onDataArrived.bind(this);
+
         console.log("try to get data");
-        loadORDownload(data => {
-            this.onDataArrived(data);
-        });
+        loadORDownload(onData);
+
+        setInterval(function(){
+            console.log("check if price data expires");
+            loadORDownload(onData);
+        }, 1000*3600*24); //1 day
     }
 
     _renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
