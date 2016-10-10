@@ -16,15 +16,12 @@ import {parseHouseCSV} from './parser.js';
 import {storage} from './storageHelper.js';
 
 export function loadORDownload(dataCallback) {
+
     storage.load().then(res => {
-        // found data go to then()
-        // console.log("ret,userid:",ret.userid);
+
         console.log("storage load res:", res);
 
         dataCallback(res);
-        // downloadAndParse();
-
-        // case1: use it
 
     }).catch(err => {
         // any exception including data not found
@@ -59,27 +56,28 @@ function downloadAndParse(dataCallback) {
     }).then(() => {
         console.log('unzip completed!');
 
-        parseHouseCSV(readEachCSVFile, cityData => {
-            console.log("houseData:", cityData);
-            const newData = cityData.map(city=>{
-                let finalNum = 0;
-                if(city.price<0){
-                    finalNum ="error";
-                } else if (city.price ==0) {
-                    finalNum = "沒有交易";
-                } else {
-                    finalNum = (Math.round(city.price)).toString().replace(/\B(?=(\d{3})+(?!\d))/g,
-                          ",");
-                }
-
-                return city.name+":$"+finalNum;
-            });
-            console.log("new:", newData);
-            newData.splice(0, 0, "各縣市平均房價(不動產+預售屋)");
-            storage.save(newData);
-
-            dataCallback(newData);
-        });
+        // comment temporarily
+        // parseHouseCSV(readEachCSVFile, cityData => {
+        //     console.log("houseData:", cityData);
+        //     const newData = cityData.map(city=>{
+        //         let finalNum = 0;
+        //         if(city.price<0){
+        //             finalNum ="error";
+        //         } else if (city.price ==0) {
+        //             finalNum = "沒有交易";
+        //         } else {
+        //             finalNum = (Math.round(city.price)).toString().replace(/\B(?=(\d{3})+(?!\d))/g,
+        //                   ",");
+        //         }
+        //
+        //         return city.name+":$"+finalNum;
+        //     });
+        //     console.log("new:", newData);
+        //     newData.splice(0, 0, "各縣市平均房價(不動產+預售屋)");
+        //     storage.save(newData);
+        //
+        //     dataCallback(newData);
+        // });
 
     }).catch((error) => {
         console.log('unzip error:');
@@ -88,12 +86,8 @@ function downloadAndParse(dataCallback) {
     })
 }
 
-// parseTotalHouseCSV(readEachCSVFile);
 
 const dataURL = "http://data.moi.gov.tw/MoiOD/System/DownloadFile.aspx?DATA=F0199ED0-184A-40D5-9506-95138F54159A";
-
-// var unzip = require('unzip');
-// import {fs} from 'fs';
 
 // download and save
 function downloadFile() {
@@ -109,12 +103,12 @@ function downloadFile() {
     });
 }
 
-// test unzip, work
+// unzip, work
 function unzip() {
-    // const readZipfilepath = dirs.DocumentDir + "/RNFetchBlob_tmp/test2.zip";
-    // let sourcePath = 'path_to_your_zip_file';
+
+    // https://github.com/johanneslumpe/react-native-fs
     // let targetPath = RNFS.DocumentDirectoryPath;
-    // const unZipfilepath = dirs.DocumentDir + "/RNFetchBlob_tmp/test3";
+
     return ZipArchive.unzip(zipFilePath, unzipPath);
 }
 
@@ -179,8 +173,6 @@ function readEachCSVFile(code, houseType, finishReadFun) {
     })
 }
 
-// readEachCSVFile();
-
 // works, just for test
 // function readTestFile() {
 //     const readfilepath = dirs.DocumentDir + "/RNFetchBlob_tmp/2.txt";
@@ -211,5 +203,4 @@ function readEachCSVFile(code, houseType, finishReadFun) {
 //         })
 //     })
 // }
-
 // readFile();

@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "ios": "react-native run-ios"
+    "ios": "react-native run-ios",
+    "android2": "concurrently 'emulator @Nexus_5X_API_23' 'sleep 13 && react-native run-android'",
+    "qemu_emulator": "emulator @Nexus_5X_API_23",
+    "android": "react-native run-android'"
   },
   "dependencies": {
     "comma-separated-values": "^3.6.4",
@@ -13,5 +16,8 @@
     "react-native-fetch-blob": "^0.9.5",
     "react-native-storage": "^0.1.4",
     "react-native-zip-archive": "0.0.11"
+  },
+  "devDependencies": {
+    "concurrently": "^3.1.0"
   }
 }

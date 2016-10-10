@@ -3,3 +3,6 @@ rootProject.name = 'testReactNative'
 include ':app'
 include ':react-native-fetch-blob'
 project(':react-native-fetch-blob').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fetch-blob/android')
+
+include ':react-native-zip-archive'
+project(':react-native-zip-archive').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-zip-archive/android')
