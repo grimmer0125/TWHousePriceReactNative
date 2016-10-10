@@ -57,27 +57,27 @@ function downloadAndParse(dataCallback) {
         console.log('unzip completed!');
 
         // comment temporarily
-        // parseHouseCSV(readEachCSVFile, cityData => {
-        //     console.log("houseData:", cityData);
-        //     const newData = cityData.map(city=>{
-        //         let finalNum = 0;
-        //         if(city.price<0){
-        //             finalNum ="error";
-        //         } else if (city.price ==0) {
-        //             finalNum = "沒有交易";
-        //         } else {
-        //             finalNum = (Math.round(city.price)).toString().replace(/\B(?=(\d{3})+(?!\d))/g,
-        //                   ",");
-        //         }
-        //
-        //         return city.name+":$"+finalNum;
-        //     });
-        //     console.log("new:", newData);
-        //     newData.splice(0, 0, "各縣市平均房價(不動產+預售屋)");
-        //     storage.save(newData);
-        //
-        //     dataCallback(newData);
-        // });
+        parseHouseCSV(readEachCSVFile, cityData => {
+            console.log("houseData:", cityData);
+            const newData = cityData.map(city=>{
+                let finalNum = 0;
+                if(city.price<0){
+                    finalNum ="error";
+                } else if (city.price ==0) {
+                    finalNum = "沒有交易";
+                } else {
+                    finalNum = (Math.round(city.price)).toString().replace(/\B(?=(\d{3})+(?!\d))/g,
+                          ",");
+                }
+
+                return city.name+":$"+finalNum;
+            });
+            console.log("new:", newData);
+            newData.splice(0, 0, "各縣市平均房價(不動產+預售屋)");
+            storage.save(newData);
+
+            dataCallback(newData);
+        });
 
     }).catch((error) => {
         console.log('unzip error:');
