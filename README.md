@@ -7,12 +7,12 @@ It is the brother project of https://github.com/grimmer0125/3DTWHousePriceMap.
 2. Use React Native.
 3. Automaticlly update the data every 0.5 month. Data source: http://data.gov.tw/node/6213. Alternative: http://plvr.land.moi.gov.tw/Index 
 
-### How to run on iOS 
+### How to run on iOS simulator
 1. Follow the instrument to setup React Native enviornment, https://facebook.github.io/react-native/docs/getting-started.html
 2. Type `npm install`
 3. Type `npm run ios` to launch the iOS simulator to run this react native app. 
 
-### How to run on Android 
+### How to run on Android emulator
 1. Follow the instrument to setup React Native enviornment, https://facebook.github.io/react-native/docs/getting-started.html
 2. Type `npm install`
 3. Launch your Android emulator first, then `npm run android` to install and run. The default React Native command will not launch Android emulator automatically. 
